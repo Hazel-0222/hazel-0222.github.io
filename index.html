@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hazel-0222 · 工具集</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', '微软雅黑', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f5f0ff 50%, #fdf2f8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .container {
+            max-width: 640px;
+            width: 100%;
+            text-align: center;
+        }
+        /* 头像区 */
+        .avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+        }
+        .name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .bio {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+        /* 工具卡片 */
+        .tools-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .tool-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            border: 1px solid #f1f5f9;
+            text-align: left;
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: #e2e8f0;
+        }
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .tool-icon.stitch {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+        .tool-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+        .tool-info p {
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+        .tool-arrow {
+            margin-left: auto;
+            color: #cbd5e1;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .tool-card:hover .tool-arrow {
+            color: #6366f1;
+        }
+        /* 页脚 */
+        .footer {
+            margin-top: 32px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .footer a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        /* 暗色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1a0a1e 100%);
+            }
+            .name { color: #f1f5f9; }
+            .bio { color: #94a3b8; }
+            .tool-card {
+                background: #1e293b;
+                border-color: #334155;
+            }
+            .tool-card:hover {
+                box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                border-color: #475569;
+            }
+            .tool-info h3 { color: #f1f5f9; }
+            .tool-info p { color: #94a3b8; }
+            .tool-card:hover .tool-arrow { color: #818cf8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头像 -->
+        <div class="avatar">🦊</div>
+        <div class="name">Hazel-0222</div>
+        <div class="bio">一些实用小工具，全部在浏览器本地运行，不上传数据。</div>
+
+        <!-- 工具列表 -->
+        <div class="tools-title">🔧 工具</div>
+
+        <a href="https://hazel-0222.github.io/image-tools/image-stitch/" class="tool-card">
+            <div class="tool-icon stitch">🖼️</div>
+            <div class="tool-info">
+                <h3>图片拼接工具</h3>
+                <p>网格/长图拼接 · 自定义背景 · 支持粘贴截图 · 纯浏览器处理</p>
+            </div>
+            <span class="tool-arrow">→</span>
+        </a>
+
+        <!-- 以后在这添加更多工具卡片 -->
+
+        <div class="footer">
+            <a href="https://github.com/Hazel-0222">GitHub</a>
+        </div>
+    </div>
+</body>
+</html>
