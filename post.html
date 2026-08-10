@@ -396,9 +396,6 @@
 
         // Custom marked renderer (marked.js v14 token-based API)
         const renderer = {
-            table(token) {
-                return `<div class="table-wrap">\n<table>\n${this.parser.parse(token.tokens)}\n</table>\n</div>\n`;
-            },
             image(token) {
                 const titleAttr = token.title ? ` title="${escHtml(token.title)}"` : '';
                 return `<img src="${token.href}" alt="${token.text}"${titleAttr} loading="lazy">`;
@@ -450,6 +447,8 @@
                 const readTime = Math.max(1, Math.ceil(wordCount / 400));
 
                 const html = marked.parse(md);
+                // Post-process: wrap tables for border-radius styling
+                const wrappedHtml = html.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
                 container.innerHTML = `
                     <div class="post-header">
                         <div class="post-date">${meta.date}</div>
@@ -459,7 +458,7 @@
                             <span>📝 ${wordCount.toLocaleString()} 字</span>
                         </div>
                     </div>
-                    <div class="content">${html}</div>
+                    <div class="content">${wrappedHtml}</div>
                 `;
 
                 // Post-render enhancements
