@@ -344,37 +344,8 @@
         <!-- Tools -->
         <section id="tools">
             <div class="section-title">🔧 常用工具</div>
-            <div class="tools-grid">
-                <a href="https://hazel-0222.github.io/tools/image/image-stitch/" class="tool-card" target="_blank" rel="noopener">
-                    <div class="tag">Image</div>
-                    <div class="icon">🖼️</div>
-                    <div class="name">图片拼接</div>
-                    <div class="desc">网格拼接、长图合成，支持粘贴截图，纯浏览器处理</div>
-                </a>
-                <a href="https://hazel-0222.github.io/tools/word/word-extract-images/" class="tool-card" target="_blank" rel="noopener">
-                    <div class="tag">Word</div>
-                    <div class="icon">📄</div>
-                    <div class="name">Word 图片提取</div>
-                    <div class="desc">从 .docx 文件中提取所有图片，按文档顺序排列</div>
-                </a>
-                <a href="https://hazel-0222.github.io/tools/word/word-diff/" class="tool-card" target="_blank" rel="noopener">
-                    <div class="tag">Word</div>
-                    <div class="icon">🔍</div>
-                    <div class="name">Word 差异对比</div>
-                    <div class="desc">对比两个 .docx 文档差异，段落级比对，支持导出报告</div>
-                </a>
-                <a href="https://hazel-0222.github.io/tools/excel/excel-add-toc/" class="tool-card" target="_blank" rel="noopener">
-                    <div class="tag">Excel</div>
-                    <div class="icon">📊</div>
-                    <div class="name">Excel 目录生成</div>
-                    <div class="desc">自动生成工作表目录页，超链接跳转，纯浏览器处理</div>
-                </a>
-                <a href="https://hazel-0222.github.io/tools/excel/excel-diff/" class="tool-card" target="_blank" rel="noopener">
-                    <div class="tag">Excel</div>
-                    <div class="icon">📋</div>
-                    <div class="name">Excel 差异对比</div>
-                    <div class="desc">对比两个 .xlsx 表格，按行匹配差异，支持关键列匹配</div>
-                </a>
+            <div class="tools-grid" id="toolsGrid">
+                <div class="empty-state">加载中...</div>
             </div>
         </section>
 
@@ -421,6 +392,30 @@
                 // API unavailable, show fallback
             }
             fallback.style.display = 'flex';
+        })();
+
+        // Load tools from tools.json
+        (async function loadTools() {
+            const grid = document.getElementById('toolsGrid');
+            try {
+                const resp = await fetch('https://hazel-0222.github.io/tools/tools.json');
+                if (!resp.ok) throw new Error('Failed to load');
+                const tools = await resp.json();
+                if (tools.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">暂无工具</div>';
+                    return;
+                }
+                grid.innerHTML = tools.map(t => `
+                    <a href="https://hazel-0222.github.io/tools/${t.path}" class="tool-card" target="_blank" rel="noopener">
+                        <div class="tag">${escHtml(t.category)}</div>
+                        <div class="icon">${escHtml(t.icon)}</div>
+                        <div class="name">${escHtml(t.name)}</div>
+                        <div class="desc">${escHtml(t.desc)}</div>
+                    </a>
+                `).join('');
+            } catch (e) {
+                grid.innerHTML = '<div class="empty-state">工具加载失败</div>';
+            }
         })();
 
         // Load posts from posts.json
