@@ -373,8 +373,8 @@
         <!-- Posts -->
         <section id="posts">
             <div class="section-title">📝 文章</div>
-            <div class="empty-state">
-                准备中，想到什么写什么。
+            <div class="post-list" id="postList">
+                <div class="empty-state">加载中...</div>
             </div>
         </section>
 
@@ -427,6 +427,33 @@
             }
             fallback.style.display = 'inline-flex';
         })();
+
+        // Load posts from posts.json
+        (async function loadPosts() {
+            const list = document.getElementById('postList');
+            try {
+                const resp = await fetch('posts.json');
+                if (!resp.ok) throw new Error('Failed to load');
+                const posts = await resp.json();
+                if (posts.length === 0) {
+                    list.innerHTML = '<div class="empty-state">准备中，想到什么写什么。</div>';
+                    return;
+                }
+                list.innerHTML = posts.map(p => `
+                    <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="post-item">
+                        <span class="post-date">${p.date}</span>
+                        <span class="post-title">${escHtml(p.title)}</span>
+                        <span class="arrow">→</span>
+                    </a>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = '<div class="empty-state">准备中，想到什么写什么。</div>';
+            }
+        })();
+
+        function escHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
     </script>
 </body>
 </html>
