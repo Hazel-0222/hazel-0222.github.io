@@ -188,10 +188,16 @@
         .content blockquote strong { color: var(--accent); }
 
         /* Table */
-        .content table {
-            width: 100%; border-collapse: collapse; margin: 20px 0;
-            font-size: 14.5px; border-radius: 8px; overflow: hidden;
+        .table-wrap {
+            margin: 20px 0;
             border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+        .table-wrap table {
+            width: 100%; border-collapse: collapse; margin: 0;
+            font-size: 14.5px; min-width: 500px;
         }
         .content thead { background: var(--code-bg); }
         .content th {
@@ -388,7 +394,7 @@
 
         // Table wrapper for responsive scroll
         renderer.table = function(header, body) {
-            return `<div style="overflow-x:auto;margin:20px 0;"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
+            return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
         };
 
         // Image with loading lazy
