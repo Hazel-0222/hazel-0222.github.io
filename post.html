@@ -394,28 +394,23 @@
             });
         }
 
-        // Custom marked renderer
-        const renderer = new marked.Renderer();
-
-        // Table wrapped for border-radius + overflow
-        renderer.table = function(header, body) {
-            return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
+        // Custom marked renderer (marked.js v14 token-based API)
+        const renderer = {
+            table(token) {
+                return `<div class="table-wrap">\n<table>\n${this.parser.parse(token.tokens)}\n</table>\n</div>\n`;
+            },
+            image(token) {
+                const titleAttr = token.title ? ` title="${escHtml(token.title)}"` : '';
+                return `<img src="${token.href}" alt="${escHtml(token.text)}"${titleAttr} loading="lazy">`;
+            },
+            code(token) {
+                const lang = (token.lang || '').trim();
+                const langClass = lang ? ` class="language-${escHtml(lang)}"` : '';
+                return `<pre><code${langClass}>${escHtml(token.text)}</code></pre>`;
+            }
         };
 
-        // Image with loading lazy
-        renderer.image = function(href, title, text) {
-            const titleAttr = title ? ` title="${escHtml(title)}"` : '';
-            return `<img src="${href}" alt="${escHtml(text)}"${titleAttr} loading="lazy">`;
-        };
-
-        // Code blocks with language class
-        renderer.code = function(code, infostring) {
-            const lang = (infostring || '').trim();
-            const langClass = lang ? ` class="language-${escHtml(lang)}"` : '';
-            return `<pre><code${langClass}>${escHtml(code)}</code></pre>`;
-        };
-
-        marked.setOptions({
+        marked.use({
             renderer: renderer,
             gfm: true,
             breaks: false,
