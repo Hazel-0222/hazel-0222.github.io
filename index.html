@@ -220,6 +220,19 @@
             margin-bottom: 8px;
         }
 
+        .tools-category {
+            margin-bottom: 24px;
+        }
+        .tools-category-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            padding-left: 2px;
+        }
+
         /* ─── Posts ─── */
         .post-list {
             display: flex;
@@ -344,7 +357,7 @@
         <!-- Tools -->
         <section id="tools">
             <div class="section-title">🔧 常用工具</div>
-            <div class="tools-grid" id="toolsGrid">
+            <div id="toolsContainer">
                 <div class="empty-state">加载中...</div>
             </div>
         </section>
@@ -394,27 +407,42 @@
             fallback.style.display = 'flex';
         })();
 
-        // Load tools from tools.json
+        // Load tools from tools.json, grouped by category
         (async function loadTools() {
-            const grid = document.getElementById('toolsGrid');
+            const container = document.getElementById('toolsContainer');
             try {
                 const resp = await fetch('https://hazel-0222.github.io/tools/tools.json');
                 if (!resp.ok) throw new Error('Failed to load');
                 const tools = await resp.json();
                 if (tools.length === 0) {
-                    grid.innerHTML = '<div class="empty-state">暂无工具</div>';
+                    container.innerHTML = '<div class="empty-state">暂无工具</div>';
                     return;
                 }
-                grid.innerHTML = tools.map(t => `
-                    <a href="https://hazel-0222.github.io/tools/${t.path}" class="tool-card" target="_blank" rel="noopener">
-                        <div class="tag">${escHtml(t.category)}</div>
-                        <div class="icon">${escHtml(t.icon)}</div>
-                        <div class="name">${escHtml(t.name)}</div>
-                        <div class="desc">${escHtml(t.desc)}</div>
-                    </a>
-                `).join('');
+                // Group by category
+                const groups = {};
+                for (const t of tools) {
+                    if (!groups[t.category]) groups[t.category] = [];
+                    groups[t.category].push(t);
+                }
+                const categoryOrder = ['Word', 'Excel', 'Image'];
+                container.innerHTML = categoryOrder
+                    .filter(cat => groups[cat])
+                    .map(cat => `
+                        <div class="tools-category">
+                            <div class="tools-category-title">${escHtml(cat)}</div>
+                            <div class="tools-grid">
+                                ${groups[cat].map(t => `
+                                    <a href="https://hazel-0222.github.io/tools/${t.path}" class="tool-card" target="_blank" rel="noopener">
+                                        <div class="icon">${escHtml(t.icon)}</div>
+                                        <div class="name">${escHtml(t.name)}</div>
+                                        <div class="desc">${escHtml(t.desc)}</div>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
             } catch (e) {
-                grid.innerHTML = '<div class="empty-state">工具加载失败</div>';
+                container.innerHTML = '<div class="empty-state">工具加载失败</div>';
             }
         })();
 
