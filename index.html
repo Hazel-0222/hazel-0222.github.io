@@ -176,6 +176,41 @@
             flex-shrink: 0;
         }
 
+        .wechat-qr {
+            cursor: pointer;
+            position: relative;
+        }
+        .wechat-qr-popup {
+            display: none;
+            position: absolute;
+            left: 0;
+            bottom: 100%;
+            margin-bottom: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 99;
+        }
+        .wechat-qr-popup img {
+            display: block;
+            width: 160px;
+            height: 160px;
+        }
+        .wechat-qr:hover .wechat-qr-popup {
+            display: block;
+        }
+        /* QR image switching: light mode default, dark mode override */
+        .qr-light { display: inline; }
+        .qr-dark { display: none; }
+        [data-theme="dark"] .qr-light { display: none; }
+        [data-theme="dark"] .qr-dark { display: inline; }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) .qr-light { display: none; }
+            :root:not([data-theme="light"]) .qr-dark { display: inline; }
+        }
+
         .sidebar-links {
             margin-top: 20px;
             display: flex;
@@ -413,6 +448,13 @@
             <a class="sidebar-contact-item" href="mailto:970484966@qq.com">
                 <span class="sidebar-contact-icon">✉️</span> 970484966@qq.com
             </a>
+            <span class="sidebar-contact-item wechat-qr">
+                <span class="sidebar-contact-icon">💬</span> 微信
+                <span class="wechat-qr-popup">
+                    <img class="qr-light" src="images/WeChat_white.png" alt="微信二维码">
+                    <img class="qr-dark" src="images/WeChat_black.png" alt="微信二维码">
+                </span>
+            </span>
         </div>
 
         <div class="sidebar-links">
