@@ -102,8 +102,17 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
+            object-fit: cover;
+            display: inline-block;
+            margin-bottom: 24px;
+            box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--border);
+        }
+        .hero-avatar-fallback {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
-            display: inline-flex;
+            display: none;
             align-items: center;
             justify-content: center;
             font-size: 36px;
@@ -317,7 +326,8 @@
 
         <!-- Hero -->
         <header class="hero">
-            <div class="hero-avatar">🦊</div>
+            <img class="hero-avatar" id="avatarImg" src="" alt="avatar" style="display:none" onload="this.style.display='inline-block'">
+            <div class="hero-avatar-fallback" id="avatarFallback">🦊</div>
             <h1>代码与像素</h1>
             <p class="tagline">游戏本地化 PM，业余写点小工具。<br>相信好的工具应该打开即用，不折腾。</p>
             <div class="hero-links">
@@ -397,6 +407,26 @@
         window.addEventListener('scroll', () => {
             nav.classList.toggle('scrolled', window.scrollY > 10);
         });
+
+        // Load GitHub avatar
+        (async function loadAvatar() {
+            const img = document.getElementById('avatarImg');
+            const fallback = document.getElementById('avatarFallback');
+            try {
+                const resp = await fetch('https://api.github.com/users/Hazel-0222');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.avatar_url) {
+                        img.src = data.avatar_url;
+                        img.style.display = 'inline-block';
+                        return;
+                    }
+                }
+            } catch (e) {
+                // API unavailable, show fallback
+            }
+            fallback.style.display = 'inline-flex';
+        })();
     </script>
 </body>
 </html>
