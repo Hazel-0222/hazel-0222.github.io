@@ -3,194 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hazel-0222 · 工具集</title>
+    <title>Hazel · 代码与像素</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', '微软雅黑', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f0f4ff 0%, #f5f0ff 50%, #fdf2f8 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
+        :root {
+            --bg: #fafafa;
+            --surface: #ffffff;
+            --surface-hover: #f5f5f5;
+            --text: #171717;
+            --text-secondary: #525252;
+            --text-muted: #a3a3a3;
+            --border: #e5e5e5;
+            --accent: #2563eb;
+            --accent-soft: #eff6ff;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --shadow: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-lg: 0 4px 24px rgba(0,0,0,0.06);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            --max-width: 720px;
         }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --surface: #171717;
+                --surface-hover: #1f1f1f;
+                --text: #ededed;
+                --text-secondary: #a3a3a3;
+                --text-muted: #525252;
+                --border: #262626;
+                --accent: #3b82f6;
+                --accent-soft: #1e293b;
+                --shadow: 0 1px 2px rgba(0,0,0,0.2);
+                --shadow-lg: 0 4px 24px rgba(0,0,0,0.4);
+            }
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
         .container {
-            max-width: 640px;
-            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ─── Nav ─── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg);
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+        nav.scrolled { border-bottom-color: var(--border); }
+        .nav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 56px;
+        }
+        .nav-logo {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+        .nav-links a:hover { color: var(--text); }
+
+        /* ─── Hero ─── */
+        .hero {
+            padding: 80px 0 64px;
             text-align: center;
         }
-        /* 头像区 */
-        .avatar {
-            width: 88px;
-            height: 88px;
+        .hero-avatar {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            display: flex;
+            background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 40px;
-            color: white;
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+            font-size: 36px;
+            margin-bottom: 24px;
+            box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--border);
         }
-        .name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 4px;
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            line-height: 1.2;
         }
-        .bio {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 32px;
+        .hero .tagline {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
-        /* 工具卡片 */
-        .tools-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #94a3b8;
-            margin-bottom: 16px;
+        .hero-links {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .hero-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
+        }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-outline {
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover { background: var(--surface-hover); }
+
+        /* ─── Section ─── */
+        section {
+            padding: 48px 0;
+        }
+        .section-title {
+            font-size: 13px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* ─── Tools Grid ─── */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
         }
         .tool-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px 24px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
             text-decoration: none;
-            color: inherit;
+            color: var(--text);
             transition: all 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            border: 1px solid #f1f5f9;
-            text-align: left;
+            box-shadow: var(--shadow);
         }
         .tool-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            border-color: #e2e8f0;
+            box-shadow: var(--shadow-lg);
+            border-color: #94a3b8;
         }
-        .tool-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
+        .tool-card .icon {
+            font-size: 28px;
+            margin-bottom: 12px;
         }
-        .tool-icon.stitch {
-            background: #eef2ff;
-            color: #4f46e5;
-        }
-        .tool-icon.excel {
-            background: #f0fdf4;
-            color: #16a34a;
-        }
-        .tool-icon.word {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-        .tool-info h3 {
-            font-size: 1rem;
+        .tool-card .name {
             font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 2px;
+            font-size: 15px;
+            margin-bottom: 4px;
         }
-        .tool-info p {
-            font-size: 0.82rem;
-            color: #64748b;
+        .tool-card .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
         }
-        .tool-arrow {
-            margin-left: auto;
-            color: #cbd5e1;
-            font-size: 1.2rem;
-            flex-shrink: 0;
+        .tool-card .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+            background: var(--accent-soft);
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-bottom: 10px;
         }
-        .tool-card:hover .tool-arrow {
-            color: #6366f1;
+
+        /* ─── Posts ─── */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
-        /* 页脚 */
-        .footer {
-            margin-top: 32px;
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-        .footer a {
-            color: #6366f1;
+        .post-item {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            padding: 14px 16px;
+            border-radius: var(--radius);
             text-decoration: none;
+            color: var(--text);
+            transition: background 0.15s;
+            margin: 0 -16px;
         }
-        .footer a:hover {
-            text-decoration: underline;
+        .post-item:hover { background: var(--surface); }
+        .post-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            min-width: 80px;
         }
-        /* 暗色模式 */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1a0a1e 100%);
-            }
-            .name { color: #f1f5f9; }
-            .bio { color: #94a3b8; }
-            .tool-card {
-                background: #1e293b;
-                border-color: #334155;
-            }
-            .tool-card:hover {
-                box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-                border-color: #475569;
-            }
-            .tool-info h3 { color: #f1f5f9; }
-            .tool-info p { color: #94a3b8; }
-            .tool-card:hover .tool-arrow { color: #818cf8; }
+        .post-title {
+            font-size: 15px;
+            font-weight: 500;
+            flex: 1;
+        }
+        .post-item .arrow {
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .post-item:hover .arrow { opacity: 1; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ─── About ─── */
+        .about-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+        .about-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .about-card p + p { margin-top: 12px; }
+
+        /* ─── Footer ─── */
+        footer {
+            padding: 48px 0;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        footer a:hover { color: var(--text); }
+
+        /* ─── Divider ─── */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0;
+        }
+
+        @media (max-width: 480px) {
+            .hero { padding: 48px 0 40px; }
+            .hero h1 { font-size: 28px; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .post-item { margin: 0 -8px; padding: 12px 8px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 头像 -->
-        <div class="avatar">🦊</div>
-        <div class="name">Hazel-0222</div>
-        <div class="bio">一些实用小工具，全部在浏览器本地运行，不上传数据。</div>
 
-        <!-- 工具列表 -->
-        <div class="tools-title">🔧 工具</div>
-
-        <a href="https://hazel-0222.github.io/image-tools/image-stitch/" class="tool-card">
-            <div class="tool-icon stitch">🖼️</div>
-            <div class="tool-info">
-                <h3>图片拼接工具</h3>
-                <p>网格/长图拼接 · 自定义背景 · 支持粘贴截图 · 纯浏览器处理</p>
-            </div>
-            <span class="tool-arrow">→</span>
-        </a>
-
-        <a href="https://hazel-0222.github.io/excel-tools/excel-toc/" class="tool-card">
-            <div class="tool-icon excel">📘</div>
-            <div class="tool-info">
-                <h3>Excel 目录生成器</h3>
-                <p>自动生成工作表目录页 · 超链接跳转 · 重命名自动更新 · 纯浏览器处理</p>
-            </div>
-            <span class="tool-arrow">→</span>
-        </a>
-
-        <a href="https://hazel-0222.github.io/word-tools/word-extract-images/" class="tool-card">
-            <div class="tool-icon word">📝</div>
-            <div class="tool-info">
-                <h3>Word 图片提取</h3>
-                <p>从 .docx 文件中提取所有图片 · 按文档顺序排列 · 支持批量下载 · 纯浏览器处理</p>
-            </div>
-            <span class="tool-arrow">→</span>
-        </a>
-
-        <!-- 以后在这添加更多工具卡片 -->
-
-        <div class="footer">
-            <a href="https://github.com/Hazel-0222">GitHub</a>
+    <nav id="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">Hazel</a>
+            <ul class="nav-links">
+                <li><a href="#tools">工具</a></li>
+                <li><a href="#posts">文章</a></li>
+                <li><a href="#about">关于</a></li>
+            </ul>
         </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- Hero -->
+        <header class="hero">
+            <div class="hero-avatar">🦊</div>
+            <h1>代码与像素</h1>
+            <p class="tagline">游戏本地化 PM，业余写点小工具。<br>相信好的工具应该打开即用，不折腾。</p>
+            <div class="hero-links">
+                <a href="https://github.com/Hazel-0222" class="btn-outline" target="_blank" rel="noopener">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
+                    GitHub
+                </a>
+                <a href="https://hazel-0222.github.io/tools/" class="btn-primary" target="_blank" rel="noopener">
+                    全部工具 →
+                </a>
+            </div>
+        </header>
+
+        <hr>
+
+        <!-- Tools -->
+        <section id="tools">
+            <div class="section-title">🔧 常用工具</div>
+            <div class="tools-grid">
+                <a href="https://hazel-0222.github.io/tools/image/image-stitch/" class="tool-card" target="_blank" rel="noopener">
+                    <div class="tag">Image</div>
+                    <div class="icon">🖼️</div>
+                    <div class="name">图片拼接</div>
+                    <div class="desc">网格拼接、长图合成，支持粘贴截图，纯浏览器处理</div>
+                </a>
+                <a href="https://hazel-0222.github.io/tools/word/word-extract-images/" class="tool-card" target="_blank" rel="noopener">
+                    <div class="tag">Word</div>
+                    <div class="icon">📄</div>
+                    <div class="name">Word 图片提取</div>
+                    <div class="desc">从 .docx 文件中提取所有图片，按文档顺序排列</div>
+                </a>
+                <a href="https://hazel-0222.github.io/tools/excel/excel-add-toc/" class="tool-card" target="_blank" rel="noopener">
+                    <div class="tag">Excel</div>
+                    <div class="icon">📊</div>
+                    <div class="name">Excel 目录生成</div>
+                    <div class="desc">自动生成工作表目录页，超链接跳转，纯浏览器处理</div>
+                </a>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Posts -->
+        <section id="posts">
+            <div class="section-title">📝 文章</div>
+            <div class="empty-state">
+                准备中，想到什么写什么。
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- About -->
+        <section id="about">
+            <div class="section-title">👋 关于</div>
+            <div class="about-card">
+                <p>游戏行业本地化 PM，日常和 Excel、Word、SVN、TAPD 打交道。</p>
+                <p>工作里重复劳动太多，慢慢写了一些小工具给自己用。都是纯前端 HTML 页面，打开浏览器就能跑，数据不离开你的电脑。</p>
+                <p>所有工具开源在 <a href="https://github.com/Hazel-0222/tools" target="_blank" rel="noopener" style="color: var(--accent);">GitHub</a>，欢迎提 issue 或 PR。</p>
+            </div>
+        </section>
+
     </div>
+
+    <footer>
+        <div>
+            <a href="https://github.com/Hazel-0222" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://hazel-0222.github.io/tools/" target="_blank" rel="noopener">Tools</a>
+            <a href="mailto:hazel@example.com">Email</a>
+        </div>
+        <div style="margin-top: 8px;">© 2026 Hazel</div>
+    </footer>
+
+    <script>
+        // Sticky nav border
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
 </body>
 </html>
