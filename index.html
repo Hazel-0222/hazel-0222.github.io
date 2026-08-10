@@ -177,21 +177,27 @@
             flex-shrink: 0;
         }
 
-        .wechat-qr-img {
-            width: 120px;
-            height: 120px;
-            border-radius: var(--radius);
+        .wechat-qr-wrap {
+            background: var(--surface);
             border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px;
             margin-top: 10px;
+            width: fit-content;
+            box-shadow: var(--shadow);
         }
-        /* QR image switching */
-        .qr-light { display: inline; }
-        .qr-dark { display: none; }
-        [data-theme="dark"] .qr-light { display: none; }
-        [data-theme="dark"] .qr-dark { display: inline; }
+        .wechat-qr-img {
+            display: block;
+            width: 110px;
+            height: 110px;
+        }
+        [data-theme="dark"] .wechat-qr-img {
+            filter: invert(1);
+        }
         @media (prefers-color-scheme: dark) {
-            :root:not([data-theme="light"]) .qr-light { display: none; }
-            :root:not([data-theme="light"]) .qr-dark { display: inline; }
+            :root:not([data-theme="light"]) .wechat-qr-img {
+                filter: invert(1);
+            }
         }
 
         .sidebar-links {
@@ -434,8 +440,9 @@
             <span class="sidebar-contact-item">
                 <span class="sidebar-contact-icon">💬</span> 微信
             </span>
-            <img class="wechat-qr-img qr-light" src="images/WeChat_white.png" alt="微信二维码">
-            <img class="wechat-qr-img qr-dark" src="images/WeChat_black.png" alt="微信二维码">
+            <div class="wechat-qr-wrap">
+                <img class="wechat-qr-img" src="images/WeChat.png" alt="微信二维码">
+            </div>
         </div>
 
         <div class="sidebar-links">

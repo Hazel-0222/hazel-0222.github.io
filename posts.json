@@ -4,5 +4,11 @@
         "title": "Hello World",
         "date": "2026-08-10",
         "summary": "第一篇博客，记录一下这个主页的搭建过程。"
+    },
+    {
+        "slug": "improve-expression-skills",
+        "title": "提高语言表达能力指南",
+        "date": "2026-08-10",
+        "summary": "表达不是天赋，是技能。从思维、表达、实战到训练，系统提升你的表达能力。"
     }
 ]
