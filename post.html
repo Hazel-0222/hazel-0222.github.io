@@ -193,26 +193,26 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             overflow: hidden;
+            overflow-x: auto;
         }
         .table-wrap table {
             width: 100%; border-collapse: collapse; margin: 0;
             font-size: 14.5px;
         }
-        .table-wrap thead { background: var(--code-bg); }
         .table-wrap th {
             font-weight: 700; padding: 12px 16px; text-align: left;
             border-bottom: 2px solid var(--border); color: var(--text); font-size: 13px;
-            white-space: nowrap;
+            white-space: nowrap; background: var(--code-bg);
         }
         .table-wrap td {
             padding: 10px 16px; border-bottom: 1px solid var(--border);
             vertical-align: top;
         }
         .table-wrap tr:last-child td { border-bottom: none; }
-        .table-wrap tbody tr:nth-child(even) { background: var(--table-stripe); }
-        .table-wrap tbody tr:hover { background: var(--accent-soft); }
+        .table-wrap tr:nth-child(even) { background: var(--table-stripe); }
+        .table-wrap tr:hover { background: var(--accent-soft); }
         /* Plain table (no wrapper) fallback */
-        .content table:not(.table-wrap table) {
+        .content > table {
             width: 100%; border-collapse: collapse; margin: 20px 0;
             font-size: 14.5px; border: 1px solid var(--border); border-radius: 10px;
             display: block; overflow-x: auto;
