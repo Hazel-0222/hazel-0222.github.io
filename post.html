@@ -397,7 +397,7 @@
         // Custom marked renderer
         const renderer = new marked.Renderer();
 
-        // Table wrapper for responsive scroll
+        // Table wrapped for border-radius + overflow
         renderer.table = function(header, body) {
             return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
         };
