@@ -127,7 +127,8 @@
         .sidebar-tagline {
             font-size: 14px;
             color: var(--text-secondary);
-            line-height: 1.6;
+            display: inline;
+            margin-left: 8px;
         }
         .sidebar-nav {
             display: flex;
@@ -176,32 +177,14 @@
             flex-shrink: 0;
         }
 
-        .wechat-qr {
-            cursor: pointer;
-            position: relative;
-        }
-        .wechat-qr-popup {
-            display: none;
-            position: absolute;
-            left: 0;
-            bottom: 100%;
-            margin-bottom: 12px;
-            background: var(--surface);
-            border: 1px solid var(--border);
+        .wechat-qr-img {
+            width: 120px;
+            height: 120px;
             border-radius: var(--radius);
-            padding: 12px;
-            box-shadow: var(--shadow-lg);
-            z-index: 99;
+            border: 1px solid var(--border);
+            margin-top: 10px;
         }
-        .wechat-qr-popup img {
-            display: block;
-            width: 160px;
-            height: 160px;
-        }
-        .wechat-qr:hover .wechat-qr-popup {
-            display: block;
-        }
-        /* QR image switching: light mode default, dark mode override */
+        /* QR image switching */
         .qr-light { display: inline; }
         .qr-dark { display: none; }
         [data-theme="dark"] .qr-light { display: none; }
@@ -432,7 +415,7 @@
             <img class="sidebar-avatar" id="avatarImg" src="" alt="avatar" style="display:none" onload="this.style.display='block'">
             <div class="sidebar-avatar-fallback" id="avatarFallback">🦊</div>
             <div class="sidebar-name">Hazel</div>
-            <div class="sidebar-tagline">游戏本地化 PM<br>业余写点小工具</div>
+            <div class="sidebar-tagline">游戏研发 PM · 业余写点小工具</div>
         </div>
 
         <nav class="sidebar-nav">
@@ -448,13 +431,11 @@
             <a class="sidebar-contact-item" href="mailto:970484966@qq.com">
                 <span class="sidebar-contact-icon">✉️</span> 970484966@qq.com
             </a>
-            <span class="sidebar-contact-item wechat-qr">
+            <span class="sidebar-contact-item">
                 <span class="sidebar-contact-icon">💬</span> 微信
-                <span class="wechat-qr-popup">
-                    <img class="qr-light" src="images/WeChat_white.png" alt="微信二维码">
-                    <img class="qr-dark" src="images/WeChat_black.png" alt="微信二维码">
-                </span>
             </span>
+            <img class="wechat-qr-img qr-light" src="images/WeChat_white.png" alt="微信二维码">
+            <img class="wechat-qr-img qr-dark" src="images/WeChat_black.png" alt="微信二维码">
         </div>
 
         <div class="sidebar-links">
@@ -501,7 +482,7 @@
         <section id="about">
             <div class="section-title">👋 关于</div>
             <div class="about-card">
-                <p>游戏行业本地化 PM，日常和 Excel、Word、SVN、TAPD 打交道。</p>
+                <p>游戏研发 PM，日常和 Excel、Word、SVN、TAPD 打交道。</p>
                 <p>工作里重复劳动太多，慢慢写了一些小工具给自己用。都是纯前端 HTML 页面，打开浏览器就能跑，数据不离开你的电脑。</p>
                 <p>所有工具开源在 <a href="https://github.com/Hazel-0222/tools" target="_blank" rel="noopener" style="color: var(--accent);">GitHub</a>，欢迎提 issue 或 PR。</p>
             </div>
