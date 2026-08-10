@@ -277,10 +277,6 @@
             box-shadow: var(--shadow-lg);
             border-color: #c0c0c0;
         }
-        .tool-card .icon {
-            font-size: 26px;
-            margin-bottom: 10px;
-        }
         .tool-card .name {
             font-weight: 600;
             font-size: 14px;
@@ -517,7 +513,6 @@
                             <div class="tools-grid">
                                 ${groups[cat].map(t => `
                                     <a href="https://hazel-0222.github.io/tools/${t.path}" class="tool-card" target="_blank" rel="noopener">
-                                        <div class="icon">${escHtml(t.icon)}</div>
                                         <div class="name">${escHtml(t.name)}</div>
                                         <div class="desc">${escHtml(t.desc)}</div>
                                     </a>
