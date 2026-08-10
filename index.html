@@ -522,7 +522,7 @@
         (async function loadTools() {
             const container = document.getElementById('toolsContainer');
             try {
-                const resp = await fetch('https://hazel-0222.github.io/tools/tools.json');
+                const resp = await fetch('https://hazel-0222.github.io/tools/tools.json?_=' + Date.now());
                 if (!resp.ok) throw new Error('Failed to load');
                 const tools = await resp.json();
                 if (tools.length === 0) {
@@ -559,7 +559,7 @@
         (async function loadPosts() {
             const list = document.getElementById('postList');
             try {
-                const resp = await fetch('posts.json');
+                const resp = await fetch('posts.json?_=' + Date.now());
                 if (!resp.ok) throw new Error('Failed to load');
                 const posts = await resp.json();
                 if (posts.length === 0) {
