@@ -401,7 +401,7 @@
             },
             image(token) {
                 const titleAttr = token.title ? ` title="${escHtml(token.title)}"` : '';
-                return `<img src="${token.href}" alt="${escHtml(token.text)}"${titleAttr} loading="lazy">`;
+                return `<img src="${token.href}" alt="${token.text}"${titleAttr} loading="lazy">`;
             },
             code(token) {
                 const lang = (token.lang || '').trim();
