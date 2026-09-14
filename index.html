@@ -1,601 +1,563 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hazel · 代码与像素</title>
-    <style>
-        :root {
-            --bg: #f8f8f7;
-            --sidebar-bg: #f2f1ef;
-            --surface: #ffffff;
-            --surface-hover: #f5f5f5;
-            --text: #1a1a1a;
-            --text-secondary: #5c5c5c;
-            --text-muted: #999999;
-            --border: #e8e8e6;
-            --accent: #2563eb;
-            --accent-soft: #eff6ff;
-            --radius: 10px;
-            --radius-lg: 16px;
-            --shadow: 0 1px 2px rgba(0,0,0,0.03);
-            --shadow-lg: 0 4px 20px rgba(0,0,0,0.05);
-            --font: "Microsoft YaHei", "微软雅黑", -apple-system, BlinkMacSystemFont, sans-serif;
-            --sidebar-w: 320px;
-            --content-max: 760px;
+<script>
+// 主题预载（防闪烁）：与工具合集共用 localStorage['ui-theme']
+(function () {
+    try {
+        var t = localStorage.getItem('ui-theme');
+        if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        /* 手动深色 */
-        [data-theme="dark"] {
-            --bg: #0d0d0d;
-            --sidebar-bg: #111111;
-            --surface: #1a1a1a;
-            --surface-hover: #222222;
-            --text: #e8e8e8;
-            --text-secondary: #a0a0a0;
-            --text-muted: #555555;
-            --border: #222222;
-            --accent: #3b82f6;
-            --accent-soft: #1e293b;
-            --shadow: 0 1px 2px rgba(0,0,0,0.2);
-            --shadow-lg: 0 4px 20px rgba(0,0,0,0.4);
-        }
-        /* 系统深色（无手动设置时生效） */
-        @media (prefers-color-scheme: dark) {
-            :root:not([data-theme="light"]) {
-                --bg: #0d0d0d;
-                --sidebar-bg: #111111;
-                --surface: #1a1a1a;
-                --surface-hover: #222222;
-                --text: #e8e8e8;
-                --text-secondary: #a0a0a0;
-                --text-muted: #555555;
-                --border: #222222;
-                --accent: #3b82f6;
-                --accent-soft: #1e293b;
-                --shadow: 0 1px 2px rgba(0,0,0,0.2);
-                --shadow-lg: 0 4px 20px rgba(0,0,0,0.4);
-            }
-        }
-        /* 手动浅色：覆盖系统深色 */
-        [data-theme="light"] {
-            --bg: #f8f8f7;
-            --sidebar-bg: #f2f1ef;
-            --surface: #ffffff;
-            --surface-hover: #f5f5f5;
-            --text: #1a1a1a;
-            --text-secondary: #5c5c5c;
-            --text-muted: #999999;
-            --border: #e8e8e6;
-            --accent: #2563eb;
-            --accent-soft: #eff6ff;
-            --shadow: 0 1px 2px rgba(0,0,0,0.03);
-            --shadow-lg: 0 4px 20px rgba(0,0,0,0.05);
-        }
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-            -webkit-font-smoothing: antialiased;
-            display: flex;
-            min-height: 100vh;
-        }
+        document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Hazel · 代码与像素</title>
+<style>
+:root {
+    /* ── 与工具合集统一的设计 Token ── */
+    --bg: #eef0fb;
+    --page-bg-image:
+        radial-gradient(900px 520px at 10% -10%, rgba(0,113,227,.145), transparent 60%),
+        radial-gradient(760px 480px at 90% 0%, rgba(122,92,255,.125), transparent 60%),
+        radial-gradient(840px 560px at 50% 108%, rgba(255,154,186,.105), transparent 60%),
+        linear-gradient(165deg, #e7ecfb 0%, #eee9fc 55%, #f6ecf2 100%);
+    --card-bg: #ffffff;
+    --input-bg: rgba(255,255,255,0.85);
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --border: #e2e2e7;
+    --primary: #0071e3;
+    --primary-soft: #e8f2fe;
+    --focus-ring: rgba(0,113,227,0.22);
+    --hover-bg: rgba(0,0,0,0.045);
+    --chip-bg: rgba(0,0,0,0.05);
+    --btn-bg: #0071e3;
+    --btn-fg: #ffffff;
+    --btn2-bg: #e5e5ea;
+    --btn2-fg: #1d1d1f;
+    --btn-shadow:
+        0 1px 2px rgba(0,0,0,0.14),
+        0 3px 10px -1px rgba(13,25,60,0.16);
+    --btn-shadow-hover:
+        0 2px 4px rgba(0,0,0,0.16),
+        0 6px 18px -2px rgba(13,25,60,0.24);
+    --hd-veil: rgba(255,255,255,0.65);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+    --panel-shadow:
+        0 2px 8px rgba(13,25,60,0.04),
+        0 24px 56px -16px rgba(13,25,60,0.14);
+    --mono: "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
+}
+[data-theme="dark"] {
+    --bg: #0f1016;
+    --page-bg-image:
+        radial-gradient(900px 520px at 10% -10%, rgba(80,140,255,.13), transparent 60%),
+        radial-gradient(760px 480px at 90% 0%, rgba(139,124,255,.10), transparent 60%),
+        radial-gradient(840px 560px at 50% 108%, rgba(255,140,180,.06), transparent 60%),
+        linear-gradient(165deg, #12131f 0%, #0f0f1a 55%, #150f1b 100%);
+    --card-bg: #1a1b22;
+    --input-bg: #14151c;
+    --text: #ededf1;
+    --text-secondary: #9a9ba5;
+    --border: #2a2b33;
+    --primary: #5ea2f5;
+    --primary-soft: rgba(94,162,245,0.16);
+    --focus-ring: rgba(94,162,245,0.30);
+    --hover-bg: rgba(255,255,255,0.06);
+    --chip-bg: rgba(255,255,255,0.08);
+    --btn-bg: #5ea2f5;
+    --btn-fg: #1d1d1f;
+    --btn2-bg: rgba(229,229,234,0.14);
+    --btn2-fg: #ededf1;
+    --btn-shadow:
+        0 1px 2px rgba(0,0,0,0.4),
+        0 4px 14px -2px rgba(0,0,0,0.5);
+    --btn-shadow-hover:
+        0 2px 4px rgba(0,0,0,0.45),
+        0 8px 22px -2px rgba(0,0,0,0.6);
+    --hd-veil: rgba(255,255,255,0.05);
+    --shadow: 0 1px 2px rgba(0,0,0,0.5);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.5);
+    --panel-shadow:
+        0 8px 20px rgba(0,0,0,0.34),
+        0 32px 64px -16px rgba(0,0,0,0.42);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    background-image: var(--page-bg-image);
+    background-attachment: fixed;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+    padding: 44px 24px 60px;
+    transition: background-color 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+}
+.page { max-width: 1080px; margin: 0 auto; }
 
-        /* ─── Sidebar ─── */
-        .sidebar {
-            width: var(--sidebar-w);
-            min-height: 100vh;
-            position: sticky;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            padding: 56px 40px;
-            background: var(--sidebar-bg);
-            flex-shrink: 0;
-        }
-        .sidebar-top {
-            margin-bottom: 40px;
-        }
-        .sidebar-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 0 0 3px var(--sidebar-bg), 0 0 0 5px var(--border);
-        }
-        .sidebar-avatar-fallback {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 0 3px var(--sidebar-bg), 0 0 0 5px var(--border);
-        }
-        .sidebar-name {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-        .sidebar-tagline {
-            font-size: 14px;
-            color: var(--text-secondary);
-            display: inline;
-            margin-left: 8px;
-        }
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: auto;
-        }
-        .sidebar-nav a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 0 -12px;
-        }
-        .sidebar-nav a:hover {
-            color: var(--text);
-            background: var(--surface-hover);
-        }
-        .sidebar-nav .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+.layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 28px;
+    align-items: start;
+}
 
-        .sidebar-contact {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-        .sidebar-contact-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-            text-decoration: none;
-        }
-        .sidebar-contact-item:hover { color: var(--text); }
-        .sidebar-contact-icon {
-            width: 18px;
-            text-align: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
+/* ══ 面板通用 ══ */
+.panel {
+    --panel-pad: 28px;
+    --panel-r: 18px;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--panel-shadow);
+    padding: var(--panel-pad);
+}
+.panel .hd {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+}
+.panel .hd::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: calc(-1 * var(--panel-pad));
+    left: calc(-1 * var(--panel-pad));
+    right: calc(-1 * var(--panel-pad));
+    bottom: 0;
+    background:
+        linear-gradient(var(--hd-veil), var(--hd-veil)),
+        var(--page-bg-image);
+    border-radius: var(--panel-r) var(--panel-r) 0 0;
+}
+.panel .hd .hdtext { min-width: 0; }
+.panel h1, .panel .hd-title { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+.panel .subtitle { color: var(--text-secondary); font-size: 13px; margin-top: 3px; line-height: 1.55; }
 
-        .wechat-qr-wrap {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 10px;
-            margin-top: 10px;
-            width: fit-content;
-            box-shadow: var(--shadow);
-        }
-        .wechat-qr-img {
-            display: block;
-            width: 110px;
-            height: 110px;
-        }
-        [data-theme="dark"] .wechat-qr-img {
-            filter: invert(1);
-        }
-        @media (prefers-color-scheme: dark) {
-            :root:not([data-theme="light"]) .wechat-qr-img {
-                filter: invert(1);
-            }
-        }
+/* ══ 左栏个人卡 ══ */
+.sidebar-card {
+    position: sticky;
+    top: 36px;
+}
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6px;
+}
+.avatar-wrap {
+    width: 92px; height: 92px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    background: var(--primary-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-wrap .fallback { font-size: 42px; }
+.profile-name { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-top: 14px; }
+.profile-tagline { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
 
-        .sidebar-links {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .sidebar-links a {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.15s;
-            width: fit-content;
-        }
-        .btn-primary {
-            background: var(--text);
-            color: var(--bg);
-        }
-        .btn-primary:hover { opacity: 0.85; }
-        .btn-outline {
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-        .btn-outline:hover { background: var(--surface-hover); }
+.nav-group { margin-top: 24px; display: flex; flex-direction: column; gap: 4px; }
+.nav-group a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 9px 12px;
+    border-radius: 10px;
+    transition: background 0.15s, color 0.15s;
+}
+.nav-group a:hover { background: var(--hover-bg); color: var(--text); }
+.nav-group a.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+.nav-group .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 
-        .sidebar-footer {
-            margin-top: 28px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 16px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            box-shadow: var(--shadow);
-        }
-        .theme-toggle:hover {
-            background: var(--surface-hover);
-            color: var(--text);
-            box-shadow: var(--shadow-lg);
-        }
+.contact-group {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    min-width: 0;
+}
+.contact-item:hover { color: var(--text); }
+.contact-icon { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
+.contact-item span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* ─── Main Content ─── */
-        .main {
-            flex: 1;
-            min-width: 0;
-            padding: 56px 56px;
-            max-width: var(--content-max);
-        }
+.wechat-qr-wrap {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 6px;
+    width: fit-content;
+    box-shadow: var(--shadow);
+}
+.wechat-qr-img { display: block; width: 110px; height: 110px; border-radius: 6px; }
+[data-theme="dark"] .wechat-qr-img { filter: invert(1); }
 
-        /* ─── Section ─── */
-        section {
-            margin-bottom: 60px;
-        }
-        .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            margin-bottom: 22px;
-        }
+.panel-links { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: var(--btn-shadow);
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-primary:hover { box-shadow: var(--btn-shadow-hover); }
+.btn-outline { background: var(--btn2-bg); color: var(--btn2-fg); }
+.btn-outline:hover { background: linear-gradient(var(--hover-bg), var(--hover-bg)), var(--btn2-bg); box-shadow: var(--btn-shadow-hover); }
+.btn svg { flex-shrink: 0; }
 
-        /* ─── Tools ─── */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
-        }
-        .tool-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px;
-            text-decoration: none;
-            color: var(--text);
-            transition: all 0.2s;
-            box-shadow: var(--shadow);
-        }
-        .tool-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            border-color: #c0c0c0;
-        }
-        .tool-card .name {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        .tool-card .desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+.sidebar-footer { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-secondary); }
 
-        .tools-category {
-            margin-bottom: 28px;
-        }
-        .tools-category:last-child { margin-bottom: 0; }
-        .tools-category-title {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            padding-left: 2px;
-        }
+/* ══ 右栏 ══ */
+.content-col { display: flex; flex-direction: column; gap: 28px; }
+.content-col > .panel > .hd { margin-bottom: 20px; }
 
-        /* ─── Posts ─── */
-        .post-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .post-item {
-            display: flex;
-            align-items: baseline;
-            gap: 16px;
-            padding: 12px 14px;
-            border-radius: var(--radius);
-            text-decoration: none;
-            color: var(--text);
-            transition: background 0.15s;
-            margin: 0 -14px;
-        }
-        .post-item:hover { background: var(--surface); }
-        .post-date {
-            font-size: 13px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            font-variant-numeric: tabular-nums;
-            min-width: 80px;
-        }
-        .post-title {
-            font-size: 15px;
-            font-weight: 500;
-            flex: 1;
-        }
-        .post-item .arrow {
-            color: var(--text-muted);
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
-        .post-item:hover .arrow { opacity: 1; }
+/* ── 主题按钮（贴边浮层） ── */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    font-size: 16px; cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.2s;
+    z-index: 100;
+}
+.theme-toggle:hover { transform: scale(1.08); box-shadow: var(--shadow-hover); }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 0;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
+/* ── 工具区块（列表行式） ── */
+.tool-list { display: flex; flex-direction: column; }
+.tool-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+}
+.tool-item:hover { background: var(--hover-bg); }
+.tool-item + .tool-item { border-top: 1px solid var(--border); }
+.ti-txt { flex: 1; min-width: 0; }
+.ti-name { font-size: 15px; font-weight: 500; }
+.ti-desc { font-size: 13px; color: var(--text-secondary); margin-top: 2px; line-height: 1.45; }
+.ti-arrow { color: var(--text-secondary); font-size: 18px; flex-shrink: 0; }
 
-        /* ─── About ─── */
-        .about-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            box-shadow: var(--shadow);
-        }
-        .about-card p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.8;
-        }
-        .about-card p + p { margin-top: 12px; }
+/* ── 文章区块（复用工具列表样式） ── */
+.post-list { display: flex; flex-direction: column; }
+.post-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+}
+.post-item:hover { background: var(--hover-bg); }
+.post-item + .post-item { border-top: 1px solid var(--border); }
+.post-item .ti-name { font-size: 15px; font-weight: 500; }
+.post-item .ti-desc { font-size: 13px; color: var(--text-secondary); margin-top: 2px; line-height: 1.45; }
 
-        /* ─── Divider ─── */
-        hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 0 0 60px 0;
-        }
+.empty-state { text-align: center; padding: 36px 0; color: var(--text-secondary); font-size: 14px; }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar {
-                width: 100%;
-                min-height: auto;
-                position: static;
-                padding: 36px 24px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .sidebar-top { margin-bottom: 24px; }
-            .sidebar-nav { flex-direction: row; gap: 12px; }
-            .sidebar-nav a { margin: 0 -8px; padding: 8px 8px; }
-            .sidebar-contact { margin-top: 20px; padding-top: 16px; }
-            .sidebar-links { margin-top: 16px; flex-direction: row; }
-            .main { padding: 36px 24px; max-width: none; }
-            .tools-grid { grid-template-columns: 1fr; }
-            .post-item { margin: 0 -8px; padding: 10px 8px; }
-        }
-    </style>
+/* ── 关于区块 ── */
+.about-card p { color: var(--text-secondary); font-size: 14px; line-height: 1.8; }
+.about-card p + p { margin-top: 12px; }
+.about-card a { color: var(--primary); text-decoration: none; }
+.about-card a:hover { text-decoration: underline; }
+
+/* ── 响应式 ── */
+@media (max-width: 860px) {
+    body { padding: 32px 18px 48px; }
+    .layout { grid-template-columns: 1fr; }
+    .sidebar-card { position: static; }
+    .panel { --panel-pad: 20px; --panel-r: 14px; }
+    .theme-toggle { top: 14px; right: 14px; }
+}
+</style>
 </head>
 <body>
 
-    <!-- ─── Sidebar ─── -->
-    <aside class="sidebar">
-        <div class="sidebar-top">
-            <img class="sidebar-avatar" id="avatarImg" src="" alt="avatar" style="display:none" onload="this.style.display='block'">
-            <div class="sidebar-avatar-fallback" id="avatarFallback">🦊</div>
-            <div class="sidebar-name">Hazel</div>
-            <div class="sidebar-tagline">游戏研发 PM · 业余写点小工具</div>
-        </div>
+<div class="page">
+    <div class="layout">
 
-        <nav class="sidebar-nav">
-            <a href="#tools"><span class="nav-icon">🔧</span> 工具</a>
-            <a href="#posts"><span class="nav-icon">📝</span> 文章</a>
-            <a href="#about"><span class="nav-icon">👋</span> 关于</a>
-        </nav>
+        <!-- ══ 左栏：个人卡 ══ -->
+        <aside class="panel sidebar-card">
+            <div class="profile">
+                <div class="avatar-wrap" id="avatarWrap">
+                    <img id="avatarImg" src="" alt="avatar" style="display:none" onload="this.style.display='block'">
+                    <span class="fallback" id="avatarFallback" style="display:flex">🦊</span>
+                </div>
+                <div class="profile-name">Hazel</div>
+                <div class="profile-tagline">游戏研发 PM · 业余写点小工具</div>
+            </div>
 
-        <div class="sidebar-contact">
-            <a class="sidebar-contact-item" href="tel:+8613527202928">
-                <span class="sidebar-contact-icon">📞</span> +86 135 2720 2928
-            </a>
-            <a class="sidebar-contact-item" href="mailto:970484966@qq.com">
-                <span class="sidebar-contact-icon">✉️</span> 970484966@qq.com
-            </a>
-            <span class="sidebar-contact-item">
-                <span class="sidebar-contact-icon">💬</span> 微信
+            <nav class="nav-group" id="pageNav">
+                <a href="#tools"><span class="nav-icon">🔧</span> 工具</a>
+                <a href="#posts"><span class="nav-icon">📝</span> 文章</a>
+                <a href="#about"><span class="nav-icon">👋</span> 关于</a>
+            </nav>
+
+            <div class="contact-group">
+                <a class="contact-item" href="tel:+8613527202928">
+                    <span class="contact-icon">📞</span><span>+86 135 2720 2928</span>
+                </a>
+                <a class="contact-item" href="mailto:970484966@qq.com">
+                    <span class="contact-icon">✉️</span><span>970484966@qq.com</span>
+                </a>
+                <span class="contact-item">
+                    <span class="contact-icon">💬</span><span>微信</span>
+                </span>
+                <div class="wechat-qr-wrap">
+                    <img class="wechat-qr-img" src="images/WeChat.png" alt="微信二维码">
+                </div>
+            </div>
+
+            <div class="panel-links">
+                <a href="https://github.com/Hazel-0222" class="btn btn-outline" target="_blank" rel="noopener">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
+                    GitHub
+                </a>
+                <a href="https://hazel-0222.github.io/tools/" class="btn btn-primary" target="_blank" rel="noopener">
+                    全部工具 →
+                </a>
+            </div>
+
+            <div class="sidebar-footer">© 2026 Hazel</div>
+        </aside>
+
+        <!-- ══ 右栏 ══ -->
+        <main class="content-col">
+
+            <!-- 工具 -->
+            <section class="panel" id="tools">
+                <div class="hd">
+                    <div class="hdtext">
+                        <div class="hd-title">常用工具</div>
+                    </div>
+                </div>
+                <div id="toolsContainer">
+                    <div class="empty-state">加载中…</div>
+                </div>
+            </section>
+
+            <!-- 文章 -->
+            <section class="panel" id="posts">
+                <div class="hd">
+                    <div class="hdtext">
+                        <div class="hd-title">文章</div>
+                    </div>
+                </div>
+                <div class="post-list" id="postList">
+                    <div class="empty-state">加载中…</div>
+                </div>
+            </section>
+
+            <!-- 关于 -->
+            <section class="panel" id="about">
+                <div class="hd">
+                    <div class="hdtext">
+                        <div class="hd-title">关于</div>
+                    </div>
+                </div>
+                <div class="about-card">
+                    <p>游戏研发 PM，日常和 Excel、Word、SVN、TAPD 打交道。</p>
+                    <p>工作里重复劳动太多，慢慢写了一些小工具给自己用。都是纯前端 HTML 页面，打开浏览器就能跑，数据不离开你的电脑。</p>
+                    <p>所有工具开源在 <a href="https://github.com/Hazel-0222/tools" target="_blank" rel="noopener">GitHub</a>，欢迎提 issue 或 PR。</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<button class="theme-toggle" id="themeToggle" title="切换明暗模式" aria-label="切换明暗模式">🌙</button>
+
+<script>
+// ── 内置兜底数据（与线上 JSON 一致；file:// 直开时生效） ──
+const FALLBACK_TOOLS = [
+    { "name": "图片拼接", "desc": "网格拼接、长图合成，支持粘贴截图", "category": "Image", "path": "image/image-stitch/" },
+    { "name": "取色器", "desc": "粘贴图片统计 Top5 主色，点击像素读色值", "category": "Image", "path": "image/color-picker/" },
+    { "name": "Word 图片提取", "desc": "从 .docx 中提取所有图片，按文档顺序排列", "category": "Word", "path": "word/word-extract-images/" },
+    { "name": "Word 差异对比", "desc": "对比两个 .docx 文档差异，支持导出报告", "category": "Word", "path": "word/word-diff/" },
+    { "name": "Excel 目录生成", "desc": "自动生成工作表目录页，超链接跳转", "category": "Excel", "path": "excel/excel-add-toc/" }
+];
+
+// ── 工具集合工具 JSON（跨仓库读取：主站 /tools/tools.json） ──
+const TOOLS_URL = 'https://hazel-0222.github.io/tools/tools.json?_=' + Date.now();
+const POSTS_URL = 'posts.json?_=' + Date.now();
+
+function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ── 工具列表：列表行式（图标 + 名称 + 描述 + 箭头） ──
+function renderTools(tools) {
+    const container = document.getElementById('toolsContainer');
+    if (!tools || tools.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无工具</div>';
+        return;
+    }
+    const html = tools.map(t => `
+        <a href="https://hazel-0222.github.io/tools/${t.path}" class="tool-item" target="_blank" rel="noopener">
+            <span class="ti-txt">
+                <span class="ti-name">${escHtml(t.name)}</span>
+                <span class="ti-desc">${escHtml(t.desc || '')}</span>
             </span>
-            <div class="wechat-qr-wrap">
-                <img class="wechat-qr-img" src="images/WeChat.png" alt="微信二维码">
-            </div>
-        </div>
+            <span class="ti-arrow">›</span>
+        </a>
+    `).join('');
+    container.innerHTML = `<div class="tool-list">${html}</div>`;
+}
 
-        <div class="sidebar-links">
-            <a href="https://github.com/Hazel-0222" class="btn-outline" target="_blank" rel="noopener">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
-                GitHub
-            </a>
-            <a href="https://hazel-0222.github.io/tools/" class="btn-primary" target="_blank" rel="noopener">
-                全部工具 →
-            </a>
-        </div>
+async function loadTools() {
+    try {
+        const resp = await fetch(TOOLS_URL);
+        if (!resp.ok) throw new Error('tools.json 不可用');
+        const data = await resp.json();
+        if (Array.isArray(data) && data.length) { renderTools(data); return; }
+        throw new Error('tools.json 空');
+    } catch (e) {
+        renderTools(FALLBACK_TOOLS); // 直开 file:// 或网络失败时兜底
+    }
+}
 
-        <div class="sidebar-footer">
-            © 2026 Hazel
-        </div>
-    </aside>
+// ── 文章列表 ──
+const FALLBACK_POSTS = [
+    { "slug": "improvised-speaking-reference", "title": "即兴回答训练参考库", "date": "2026-09-14" },
+    { "slug": "hello-world", "title": "Hello World", "date": "2026-08-10" },
+    { "slug": "improve-expression-skills", "title": "提高语言表达能力指南", "date": "2026-08-10" }
+];
 
-    <button class="theme-toggle" id="themeToggle" title="切换深浅模式">🌓</button>
+function renderPosts(posts) {
+    const list = document.getElementById('postList');
+    if (!posts || posts.length === 0) {
+        list.innerHTML = '<div class="empty-state">准备中，想到什么写什么。</div>';
+        return;
+    }
+    list.innerHTML = posts.map(p => `
+        <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="post-item">
+            <span class="ti-txt">
+                <span class="ti-name">${escHtml(p.title)}</span>
+                <span class="ti-desc">${escHtml(p.date)}</span>
+            </span>
+            <span class="ti-arrow">›</span>
+        </a>
+    `).join('');
+}
 
-    <!-- ─── Main Content ─── -->
-    <main class="main">
+async function loadPosts() {
+    try {
+        const resp = await fetch(POSTS_URL);
+        if (!resp.ok) throw new Error('posts.json 不可用');
+        const data = await resp.json();
+        if (Array.isArray(data) && data.length) { renderPosts(data); return; }
+        throw new Error('posts.json 空');
+    } catch (e) {
+        renderPosts(FALLBACK_POSTS);
+    }
+}
 
-        <!-- Tools -->
-        <section id="tools">
-            <div class="section-title">🔧 常用工具</div>
-            <div id="toolsContainer">
-                <div class="empty-state">加载中...</div>
-            </div>
-        </section>
-
-        <hr>
-
-        <!-- Posts -->
-        <section id="posts">
-            <div class="section-title">📝 文章</div>
-            <div class="post-list" id="postList">
-                <div class="empty-state">加载中...</div>
-            </div>
-        </section>
-
-        <hr>
-
-        <!-- About -->
-        <section id="about">
-            <div class="section-title">👋 关于</div>
-            <div class="about-card">
-                <p>游戏研发 PM，日常和 Excel、Word、SVN、TAPD 打交道。</p>
-                <p>工作里重复劳动太多，慢慢写了一些小工具给自己用。都是纯前端 HTML 页面，打开浏览器就能跑，数据不离开你的电脑。</p>
-                <p>所有工具开源在 <a href="https://github.com/Hazel-0222/tools" target="_blank" rel="noopener" style="color: var(--accent);">GitHub</a>，欢迎提 issue 或 PR。</p>
-            </div>
-        </section>
-
-    </main>
-
-    <script>
-        // Load GitHub avatar
-        (async function loadAvatar() {
-            const img = document.getElementById('avatarImg');
-            const fallback = document.getElementById('avatarFallback');
-            try {
-                const resp = await fetch('https://api.github.com/users/Hazel-0222');
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (data.avatar_url) {
-                        img.src = data.avatar_url;
-                        img.style.display = 'block';
-                        return;
-                    }
-                }
-            } catch (e) {
-                // API unavailable, show fallback
+// ── GitHub 头像 ──
+async function loadAvatar() {
+    const img = document.getElementById('avatarImg');
+    const fallback = document.getElementById('avatarFallback');
+    try {
+        const resp = await fetch('https://api.github.com/users/Hazel-0222');
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data.avatar_url) {
+                img.src = data.avatar_url;
+                img.style.display = 'block';
+                fallback.style.display = 'none';
+                return;
             }
-            fallback.style.display = 'flex';
-        })();
-
-        // Load tools from tools.json, grouped by category
-        (async function loadTools() {
-            const container = document.getElementById('toolsContainer');
-            try {
-                const resp = await fetch('https://hazel-0222.github.io/tools/tools.json?_=' + Date.now());
-                if (!resp.ok) throw new Error('Failed to load');
-                const tools = await resp.json();
-                if (tools.length === 0) {
-                    container.innerHTML = '<div class="empty-state">暂无工具</div>';
-                    return;
-                }
-                const groups = {};
-                for (const t of tools) {
-                    if (!groups[t.category]) groups[t.category] = [];
-                    groups[t.category].push(t);
-                }
-                const categoryOrder = ['Word', 'Excel', 'Image'];
-                container.innerHTML = categoryOrder
-                    .filter(cat => groups[cat])
-                    .map(cat => `
-                        <div class="tools-category">
-                            <div class="tools-category-title">${escHtml(cat)}</div>
-                            <div class="tools-grid">
-                                ${groups[cat].map(t => `
-                                    <a href="https://hazel-0222.github.io/tools/${t.path}" class="tool-card" target="_blank" rel="noopener">
-                                        <div class="name">${escHtml(t.name)}</div>
-                                        <div class="desc">${escHtml(t.desc)}</div>
-                                    </a>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `).join('');
-            } catch (e) {
-                container.innerHTML = '<div class="empty-state">工具加载失败</div>';
-            }
-        })();
-
-        // Load posts from posts.json
-        (async function loadPosts() {
-            const list = document.getElementById('postList');
-            try {
-                const resp = await fetch('posts.json?_=' + Date.now());
-                if (!resp.ok) throw new Error('Failed to load');
-                const posts = await resp.json();
-                if (posts.length === 0) {
-                    list.innerHTML = '<div class="empty-state">准备中，想到什么写什么。</div>';
-                    return;
-                }
-                list.innerHTML = posts.map(p => `
-                    <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="post-item">
-                        <span class="post-date">${p.date}</span>
-                        <span class="post-title">${escHtml(p.title)}</span>
-                        <span class="arrow">→</span>
-                    </a>
-                `).join('');
-            } catch (e) {
-                list.innerHTML = '<div class="empty-state">准备中，想到什么写什么。</div>';
-            }
-        })();
-
-        function escHtml(s) {
-            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
+    } catch (e) { /* 保持 🦊 兜底 */ }
+}
 
-        // Theme toggle
-        (function initTheme() {
-            const html = document.documentElement;
-            const saved = localStorage.getItem('theme');
-            if (saved) {
-                html.setAttribute('data-theme', saved);
-            }
-            document.getElementById('themeToggle').addEventListener('click', function() {
-                const current = html.getAttribute('data-theme');
-                const next = (current === 'dark') ? 'light' : 'dark';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-            });
-        })();
-    </script>
+// ── 主题切换（共享 ui-theme） ──
+const themeToggle = document.getElementById('themeToggle');
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
+themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    try { localStorage.setItem('ui-theme', next); } catch (e) {}
+    applyTheme(next);
+});
+
+// ── 左侧导航激活高亮（简易 scroll-spy） ──
+const navLinks = Array.from(document.querySelectorAll('#pageNav a'));
+const sectionIds = ['tools', 'posts', 'about'];
+function setActive(id) {
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+}
+try {
+    const spy = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) spy.observe(el);
+    });
+} catch (e) { /* 低版本浏览器忽略 */ }
+
+// ── 启动 ──
+loadAvatar();
+loadTools();
+loadPosts();
+</script>
 </body>
 </html>
