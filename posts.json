@@ -1,5 +1,11 @@
 [
     {
+        "slug": "improvised-speaking-reference",
+        "title": "即兴回答训练参考库",
+        "date": "2026-09-14",
+        "summary": "配套 Anki 卡型使用的词汇与框架参考库：5 个根框架 + 2 个专项、逻辑连接词槽位对照、按题型配好的关键词组。"
+    },
+    {
         "slug": "hello-world",
         "title": "Hello World",
         "date": "2026-08-10",
