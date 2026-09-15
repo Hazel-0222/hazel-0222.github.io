@@ -507,21 +507,13 @@ async function loadPosts() {
 }
 
 // ── GitHub 头像 ──
-async function loadAvatar() {
+function loadAvatar() {
     const img = document.getElementById('avatarImg');
     const fallback = document.getElementById('avatarFallback');
-    try {
-        const resp = await fetch('https://api.github.com/users/Hazel-0222');
-        if (resp.ok) {
-            const data = await resp.json();
-            if (data.avatar_url) {
-                img.src = data.avatar_url;
-                img.style.display = 'block';
-                fallback.style.display = 'none';
-                return;
-            }
-        }
-    } catch (e) { /* 保持 🦊 兜底 */ }
+    // 直链 GitHub 用户页 .png，自动重定向到头像图片，绕开 api.github.com 匿名限流（每 IP 60 次/时）
+    img.onload = () => { img.style.display = 'block'; fallback.style.display = 'none'; };
+    img.onerror = () => { fallback.style.display = 'flex'; };
+    img.src = 'https://github.com/Hazel-0222.png';
 }
 
 // ── 主题切换（共享 ui-theme） ──
